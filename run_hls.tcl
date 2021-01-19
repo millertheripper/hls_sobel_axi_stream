@@ -58,4 +58,4 @@ csim_design -ldflags "-L ${OPENCV_LIB} ${OPENCV_LIB_REF}" -argv "${PROJ_DIR}/${I
 csynth_design
 #cosim_design -ldflags "-L ${OPENCV_LIB} ${OPENCV_LIB_REF}" -argv "${PROJ_DIR}/${INPUT_IMAGE_FILE_SIM}"
 export_design -flow syn -rtl verilog
-export_design -flow impl -rtl verilog
+#export_design -flow impl -rtl verilog
