@@ -1,12 +1,3 @@
-/* Manual bugfixes in Vitis Library 2020.1 (TAG : v2020.1_update1)
- * 	When using AXI Stream interfaces the compiler is not implementing the interface parameters correctly.
- * 	To workaround, use the "hls::stream" and "ap_axiu" templates from <ap_axi_sdata.h> instead of
- * 	"xf_axi_sdata.hpp". Replace this include in the following files:
- * 	  "common/xf_infra.hpp"
- * 	  "common/xf_axi.hpp"
- * 	See also https://github.com/Xilinx/Vitis_Libraries/issues/28 for detailed description
- */
-
 #include "hls_sobel_axi_stream.hpp"
 #include "common/xf_headers.hpp"
 #include "common/xf_axi.hpp"

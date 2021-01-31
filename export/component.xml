@@ -2219,8 +2219,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Hls_sobel_axi_stream_top</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2101192242</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-01-19T21:42:22Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2101312048</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-01-31T19:48:42Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
