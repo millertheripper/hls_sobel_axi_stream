@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 WORK_DIR := $(shell pwd)
-VIVADO := source /opt/Xilinx/Vivado/2020.1/settings64.sh
+VIVADO := source /opt/Xilinx/Vivado/2020.2/settings64.sh
 VITIS_HLS := vitis_hls
 
 # Set this to match your vitis video library path
