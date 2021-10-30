@@ -1,3 +1,4 @@
 # Prerequisites
 hls_sobel_axi_stream/
 *.log
+export/
