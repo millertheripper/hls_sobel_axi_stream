@@ -7,36 +7,46 @@ VITIS_HLS := vitis_hls
 XF_PROJ_ROOT := ~/git/xilinx/Vitis_Libraries/vision
 
 # Set input image for test bench simulation
-INPUT_IMAGE_FILE_SIM := test_image_128x128.png
-#INPUT_IMAGE_FILE_SIM := test_image_1920x1080.bmp
+INPUT_IMAGE_FILE := test_image_128x128.png
+#INPUT_IMAGE_FILE := test_image_1920x1080.bmp
 
 # Set project name to match cpp file names
 PROJECT_NAME := hls_sobel_axi_stream
 
+SRC_FILES := \
+	$(PROJECT_NAME).cpp \
+	$(PROJECT_NAME).hpp \
+	$(PROJECT_NAME)_tb.cpp \
+	$(INPUT_IMAGE_FILE)
+
+CSIM := $(PROJECT_NAME)/solution_1/csim
+CSYNTH := $(PROJECT_NAME)/solution_1/syn
+
 .PHONY: all
-all: clean hls export_ip
+all: export_ip
 
 .PHONY: clean
 clean: 
-	@rm -rf $(PROJECT_NAME) *.str *.log *.jou .Xil output*.png export
+	@rm -rf $(PROJECT_NAME) *.str *.log *.jou .Xil output*.png export_ip
 
-.PHONY: hls
-hls:
-	$(VIVADO) && $(VITIS_HLS) run_hls.tcl $(WORK_DIR) $(XF_PROJ_ROOT) $(PROJECT_NAME) $(INPUT_IMAGE_FILE_SIM)
-	@echo ""
-	@echo "Finished building HLS project: $(PROJECT_NAME)"
-	@cp -f $(WORK_DIR)/$(PROJECT_NAME)/solution_1/csim/build/output.png output_csim.png
-	#@cp -f $(WORK_DIR)/$(PROJECT_NAME)/solution_1/sim/wrapc/output.png output_sim.png
+$(PROJECT_NAME): 
+	$(VIVADO) && $(VITIS_HLS) run_hls.tcl $(WORK_DIR) $(XF_PROJ_ROOT) $(PROJECT_NAME) $(INPUT_IMAGE_FILE) "create"
+
+$(CSIM): $(PROJECT_NAME) $(SRC_FILES)
+	@rm -f output*
+	@$(VIVADO) && $(VITIS_HLS) run_hls.tcl $(WORK_DIR) $(XF_PROJ_ROOT) $(PROJECT_NAME) $(INPUT_IMAGE_FILE) "csim"
+	@cp ./$(PROJECT_NAME)/solution_1/csim/build/output.* ./output_csim.png
 	@echo "CSIM output image copied to: $(WORK_DIR)/output_csim.png"
-	#@echo "SIM  output image copied to: $(WORK_DIR)/output_sim.png"
 
+$(CSYNTH): $(PROJECT_NAME) $(CSIM)
+	$(VIVADO) && $(VITIS_HLS) run_hls.tcl $(WORK_DIR) $(XF_PROJ_ROOT) $(PROJECT_NAME) $(INPUT_IMAGE_FILE) "csynth"
 
-.PHONY: export_ip
-export_ip:
-	@rm -Rf export && mkdir export
-	@cp -f $(WORK_DIR)/$(PROJECT_NAME)/solution_1/impl/export.zip .
-	@unzip export.zip -d export && rm export.zip
-	@rm -Rf $(WORK_DIR)/$(PROJECT_NAME)/solution_1/impl/ip
-	@echo "Exported IP to $(WORK_DIR)/export"
+export_ip: $(CSYNTH) $(PROJECT_NAME)
+	$(VIVADO) && $(VITIS_HLS) run_hls.tcl $(WORK_DIR) $(XF_PROJ_ROOT) $(PROJECT_NAME) $(INPUT_IMAGE_FILE) "export"
+	@rm -Rf $@ && mkdir $@
+	@cp -f ./$(PROJECT_NAME)/solution_1/impl/export.zip .
+	@unzip export.zip -d $(@) && rm export.zip
+	@rm -Rf ./$(PROJECT_NAME)/solution_1/impl/ip
 
-	
+.PHONY: csim
+csim : $(CSIM)
